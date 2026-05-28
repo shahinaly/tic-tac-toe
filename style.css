@@ -1,0 +1,58 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  display: grid;
+  grid: 50px 100px 1fr/ 1fr;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 2em;
+  padding-right: 2em;
+}
+
+.meta {
+  display: grid;
+  grid: repeat(3, 1fr) / 1fr 1fr;
+  justify-items: center;
+  align-items: end;
+}
+
+.content {
+  display: grid;
+  grid: 3fr 1fr/ 1fr;
+  justify-items: center;
+
+}
+.board{
+  display: grid;
+  grid: repeat(3,100px) / repeat(3, 100px);
+  justify-self: center;
+  align-self: center;
+  border: 1px solid black;
+}
+
+.cell {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px dotted black;
+}
+
+#winner {
+  display: none;
+  grid-column: 1 / -1;
+}
+
+button {
+  height: 30px;
+  width: 100px;
+}
