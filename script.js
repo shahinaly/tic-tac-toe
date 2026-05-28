@@ -14,14 +14,15 @@ const game = (() => {
   ];
 
   const makeMove = function (coor) {
-    if (board[coor] != undefined || winner !== undefined) {
+
+    if (board[coor] !== undefined || winner !== undefined) {
       return null;
     };
 
     board[coor] = currentMark;
     noMoves = noMoves + 1;
 
-    if (checkResult()) {
+    if (checkGameOver()) {
       return false;
     };
 
@@ -29,14 +30,13 @@ const game = (() => {
     return true;
   };
 
-  const checkResult = function () {
+  const checkGameOver = function () {
     for (let line of WINNING_LINES) {
       let firstElement = board[line[0]];
 
       if (firstElement == board[line[1]] &&
         firstElement == board[line[2]] &&
         firstElement != undefined) {
-        console.log("wins");
         winner = (currentMark == "x") ? 1 : 2;
         return true;
       };
@@ -64,26 +64,27 @@ const game = (() => {
     console.log(`${board[3]} ${board[4]} ${board[5]}`);
     console.log(`${board[6]} ${board[7]} ${board[8]}`);
   };
-
   return { makeMove, getBoard, getWinner, resetGame, logBoard };
-
 })();
-
 const controller = (() => {
 
   /** Event Listeners **/
 
+  /*** Game Logic ***/
   let cells = document.querySelectorAll(".cell");
   for (let cell of cells) {
     cell.addEventListener("click", (e) => {
-      if (game.makeMove(e.target.id.slice(-1)) === false) {
+
+      let playContinues = game.makeMove(e.target.id.slice(-1)); /* TODO: find a better selector */
+      if (playContinues === false) /* Move was made and Game is over. */ {
         const winner = game.getWinner();
         const scores = players.updateScores(winner);
         displayWinner(winner);
         displayScores(scores);
+        players.switchSides();
       };
+
       displayBoard();
-      players.switchSides();
 
     });
   };
@@ -130,7 +131,6 @@ const controller = (() => {
   };
 
 })();
-
 const players = (() => {
 
   const player1 = {
