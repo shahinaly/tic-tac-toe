@@ -6,6 +6,7 @@ const game = (() => {
   let currentMark = "x";
   let noMoves = 0;
   let winner;
+  let gameOver = false;
 
   const WINNING_LINES = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -15,7 +16,7 @@ const game = (() => {
 
   const makeMove = function (coor) {
 
-    if (board[coor] !== undefined) {
+    if (board[coor] !== undefined || gameOver === true) {
       return false;
     };
 
@@ -44,8 +45,9 @@ const game = (() => {
     return false;
   };
 
-  const getWinner = function () { return winner; };
-  const getBoard = function () { return board; };
+  const getWinner = () => { return winner; };
+  const getBoard = () => { return board; };
+  const endGame = () => { gameOver = true; }
 
   const switchMarks = function () {
     currentMark = (currentMark === "x") ? "o" : "x";
@@ -55,13 +57,14 @@ const game = (() => {
     noMoves = 0;
     winner = undefined;
     currentMark = "x";
+    gameOver = false;
   }
   const logBoard = function () {
     console.log(`${board[0]} ${board[1]} ${board[2]}`);
     console.log(`${board[3]} ${board[4]} ${board[5]}`);
     console.log(`${board[6]} ${board[7]} ${board[8]}`);
   };
-  return { makeMove, checkGameOver, getBoard, getWinner, switchMarks, resetGame, logBoard };
+  return { makeMove, checkGameOver, getBoard, getWinner, switchMarks, resetGame, logBoard, endGame };
 })();
 const controller = (() => {
 
@@ -99,6 +102,7 @@ const controller = (() => {
       displayWinner(winner);
       displayScores(scores);
       players.switchSides();
+      game.endGame();
     };
     displayBoard();
   }
