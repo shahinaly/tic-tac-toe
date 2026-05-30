@@ -74,6 +74,7 @@ class Controller {
   cells = document.querySelectorAll(".cell");
 
   constructor() {
+    this.players = new Players();
 
     /** Event Listeners **/
     for (let cell of this.cells) {
@@ -103,11 +104,11 @@ class Controller {
     /* Move is made and Game is over. */
     else if (moveOutcome === true && roundOver === true) {
       const winner = game.getWinner();
-      const scores = players.updateScores(winner);
+      const scores = this.players.updateScores(winner);
 
       this.displayWinner(winner);
       this.displayScores(scores);
-      players.switchSides();
+      this.players.switchSides();
       game.endRound();
     };
     this.displayBoard();
@@ -123,7 +124,7 @@ class Controller {
     if (winner === null) {
       winnerEl.textContent = "It's a tie!";
     } else if (winner === "x" || winner === "o") {
-      winnerEl.textContent = `Player ${players.getPlayer(winner)} wins!`
+      winnerEl.textContent = `Player ${this.players.getPlayer(winner)} wins!`
     }
     winnerEl.style.display = "block";
   };
@@ -148,38 +149,37 @@ class Controller {
   };
 
 }
-const players = (() => {
 
-  const player1 = {
-    mark: "x",
-    score: 0,
+class Players {
+  constructor() {
+    this.player1 = {
+      mark: "x",
+      score: 0,
+    }
+    this.player2 = {
+      mark: "o",
+      score: 0,
+    }
   }
-  const player2 = {
-    mark: "o",
-    score: 0,
-  }
-  const updateScores = function (result) {
-    if (player1.mark === result) {
-      player1.score++;
-    } else if (player2.mark === result) {
-      player2.score++;
+  updateScores = function (result) {
+    if (this.player1.mark === result) {
+      this.player1.score++;
+    } else if (this.player2.mark === result) {
+      this.player2.score++;
     }
     return {
-      1: player1.score,
-      2: player2.score
+      1: this.player1.score,
+      2: this.player2.score
     };
   };
-  const switchSides = function () {
-    player1.mark = (player1.mark === "x") ? "o" : "x";
-    player2.mark = (player2.mark === "x") ? "o" : "x";
+  switchSides = function () {
+    this.player1.mark = (this.player1.mark === "x") ? "o" : "x";
+    this.player2.mark = (this.player2.mark === "x") ? "o" : "x";
   }
 
-  const getPlayer = function (mark) {
-    return (player1.mark === mark) ? 1 : 2;
+  getPlayer = function (mark) {
+    return (this.player1.mark === mark) ? 1 : 2;
   }
-
-  return { updateScores, getPlayer, switchSides };
-
-})();
+}
 
 const controller = new Controller();
