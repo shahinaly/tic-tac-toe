@@ -1,79 +1,82 @@
-const game = (() => {
+class Game {
 
   // We index board starting from left to right, top to bottom,
   // and use a variable to track the current mark.
-  let board = new Array(9);
-  let currentMark = "x";
-  let noMoves = 0;
-  let winner;
-  let roundOver = false;
 
-  const WINNING_LINES = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8],
-    [0, 3, 6], [1, 4, 7], [2, 5, 8],
-    [0, 4, 8], [2, 4, 6]
-  ];
+  constructor() {
+    this.board = new Array(9).fill(undefined);
+    this.currentMark = "x";
+    this.noMoves = 0;
+    this.winner;
+    this.roundOver = false;
 
-  const makeMove = function (coor) {
+    this.WINNING_LINES = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+  }
 
-    if (board[coor] !== undefined || roundOver === true) {
+  makeMove = function (coor) {
+
+    if (this.board[coor] !== undefined || this.roundOver === true) {
       return false;
     };
 
-    board[coor] = currentMark;
-    noMoves = noMoves + 1;
+    this.board[coor] = this.currentMark;
+    this.noMoves = this.noMoves + 1;
 
     return true;
   };
-  const findWinner = function () {
+  findWinner = function () {
 
-    for (const [first, second, third] of WINNING_LINES) {
+    for (const [first, second, third] of this.WINNING_LINES) {
 
-      const firstElement = board[first];
+      const firstElement = this.board[first];
       if (firstElement !== undefined &&
-        firstElement === board[second] &&
-        firstElement === board[third]) {
+        firstElement === this.board[second] &&
+        firstElement === this.board[third]) {
 
-        winner = currentMark;
+        this.winner = this.currentMark;
         return true;
       };
     };
 
-    if (noMoves === 9) {
-      winner = null;
+    if (this.noMoves === 9) {
+      this.winner = null;
       return true;
     };
 
     return false;
   };
 
-  const getWinner = () => { return winner; };
-  const getBoard = () => { return board; };
-  const endRound = () => { roundOver = true; }
+  getWinner = () => { return this.winner; };
+  getBoard = () => { return this.board; };
+  endRound = () => { this.roundOver = true; }
 
-  const switchMarks = function () {
-    currentMark = (currentMark === "x") ? "o" : "x";
+  switchMarks = function () {
+    this.currentMark = (this.currentMark === "x") ? "o" : "x";
   }
-  const resetGame = function () {
-    board.fill(undefined);
-    noMoves = 0;
-    winner = undefined;
-    currentMark = "x";
-    roundOver = false;
+  resetGame = function () {
+    this.board.fill(undefined);
+    this.noMoves = 0;
+    this.winner = undefined;
+    this.currentMark = "x";
+    this.roundOver = false;
   }
-  const logBoard = function () {
-    console.log(`${board[0]} ${board[1]} ${board[2]}`);
-    console.log(`${board[3]} ${board[4]} ${board[5]}`);
-    console.log(`${board[6]} ${board[7]} ${board[8]}`);
+  logboard = function () {
+    console.log(`${this.board[0]} ${this.board[1]} ${this.board[2]}`);
+    console.log(`${this.board[3]} ${this.board[4]} ${this.board[5]}`);
+    console.log(`${this.board[6]} ${this.board[7]} ${this.board[8]}`);
   };
-  return { makeMove, findWinner, getBoard, getWinner, switchMarks, resetGame, logBoard, endRound };
-})();
+}
 
 class Controller {
 
   cells = document.querySelectorAll(".cell");
 
   constructor() {
+    this.game = new Game();
     this.players = new Players();
 
     /** Event Listeners **/
@@ -94,22 +97,22 @@ class Controller {
 
   gamePlay = function (cellIndex) {
     /* make move and recieve outcome signal */
-    const moveOutcome = game.makeMove(cellIndex);
-    const roundOver = game.findWinner();
+    const moveOutcome = this.game.makeMove(cellIndex);
+    const roundOver = this.game.findWinner();
 
     /* Move is made and game continues */
     if (moveOutcome === true && roundOver === false) {
-      game.switchMarks();
+      this.game.switchMarks();
     }
     /* Move is made and Game is over. */
     else if (moveOutcome === true && roundOver === true) {
-      const winner = game.getWinner();
+      const winner = this.game.getWinner();
       const scores = this.players.updateScores(winner);
 
       this.displayWinner(winner);
       this.displayScores(scores);
       this.players.switchSides();
-      game.endRound();
+      this.game.endRound();
     };
     this.displayBoard();
   }
@@ -129,7 +132,7 @@ class Controller {
     winnerEl.style.display = "block";
   };
   displayBoard = function () {
-    let boardArray = game.getBoard();
+    let boardArray = this.game.getBoard();
     let cellElements = document.querySelectorAll(".cell");
     for (let cell of cellElements) {
       cell.textContent = boardArray[cell.dataset.index];
@@ -143,7 +146,7 @@ class Controller {
     scorePlayer2.textContent = scores[2];
   };
   resetBoard = function () {
-    game.resetGame();
+    this.game.resetGame();
     this.cells.forEach((cell) => { cell.textContent = ""; });
     this.displayWinner(undefined, true);
   };
