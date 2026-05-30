@@ -8,6 +8,8 @@ body {
   height: 100vh;
   display: grid;
   grid: 50px 100px 1fr/ 1fr;
+  background-color: grey;
+  color: white;
 }
 
 header {
@@ -36,7 +38,7 @@ header {
   grid: repeat(3,100px) / repeat(3, 100px);
   justify-self: center;
   align-self: center;
-  border: 1px solid black;
+  border: 1px solid white;
 }
 
 .cell {
@@ -44,7 +46,7 @@ header {
   align-items: center;
   justify-content: center;
 
-  border: 1px dotted black;
+  border: 1px dotted white;
 }
 
 #winner {

@@ -69,25 +69,29 @@ const game = (() => {
   return { makeMove, findWinner, getBoard, getWinner, switchMarks, resetGame, logBoard, endRound };
 })();
 
-const controller = (() => {
+class Controller {
 
-  /** Event Listeners **/
+  cells = document.querySelectorAll(".cell");
 
-  let cells = document.querySelectorAll(".cell");
-  for (let cell of cells) {
-    cell.addEventListener("click", (e) => {
-      gamePlay(e.target.dataset.index);
+  constructor() {
+
+    /** Event Listeners **/
+    for (let cell of cells) {
+      cell.addEventListener("click", (e) => {
+        gamePlay(e.target.dataset.index);
+      });
+    };
+
+    let btn = document.querySelector("button");
+    btn.addEventListener(("click"), () => {
+      resetBoard();
     });
-  };
 
-  let btn = document.querySelector("button");
-  btn.addEventListener(("click"), () => {
-    resetBoard();
-  });
+  }
 
   /** Functions **/
 
-  const gamePlay = function (cellIndex) {
+  gamePlay = function (cellIndex) {
     /* make move and recieve outcome signal */
     const moveOutcome = game.makeMove(cellIndex);
     const roundOver = game.findWinner();
@@ -109,7 +113,7 @@ const controller = (() => {
     displayBoard();
   }
 
-  const displayWinner = function (winner, hide = false) {
+  displayWinner = function (winner, hide = false) {
     const winnerEl = document.querySelector("#winner");
     if (hide) {
       winnerEl.textContent = "";
@@ -123,27 +127,27 @@ const controller = (() => {
     }
     winnerEl.style.display = "block";
   };
-  const displayBoard = function () {
+  displayBoard = function () {
     let boardArray = game.getBoard();
     let cellElements = document.querySelectorAll(".cell");
     for (let cell of cellElements) {
       cell.textContent = boardArray[cell.dataset.index];
     };
   };
-  const displayScores = function (scores) {
+  displayScores = function (scores) {
     const scorePlayer1 = document.querySelector("#score-1");
     const scorePlayer2 = document.querySelector("#score-2");
 
     scorePlayer1.textContent = scores[1];
     scorePlayer2.textContent = scores[2];
   };
-  const resetBoard = function () {
+  resetBoard = function () {
     game.resetGame();
     cells.forEach((cell) => { cell.textContent = ""; });
     displayWinner(undefined, hide = true);
   };
 
-})();
+}
 const players = (() => {
 
   const player1 = {
