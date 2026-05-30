@@ -76,15 +76,15 @@ class Controller {
   constructor() {
 
     /** Event Listeners **/
-    for (let cell of cells) {
+    for (let cell of this.cells) {
       cell.addEventListener("click", (e) => {
-        gamePlay(e.target.dataset.index);
+        this.gamePlay(e.target.dataset.index);
       });
     };
 
     let btn = document.querySelector("button");
     btn.addEventListener(("click"), () => {
-      resetBoard();
+      this.resetBoard();
     });
 
   }
@@ -105,12 +105,12 @@ class Controller {
       const winner = game.getWinner();
       const scores = players.updateScores(winner);
 
-      displayWinner(winner);
-      displayScores(scores);
+      this.displayWinner(winner);
+      this.displayScores(scores);
       players.switchSides();
       game.endRound();
     };
-    displayBoard();
+    this.displayBoard();
   }
 
   displayWinner = function (winner, hide = false) {
@@ -143,8 +143,8 @@ class Controller {
   };
   resetBoard = function () {
     game.resetGame();
-    cells.forEach((cell) => { cell.textContent = ""; });
-    displayWinner(undefined, hide = true);
+    this.cells.forEach((cell) => { cell.textContent = ""; });
+    this.displayWinner(undefined, true);
   };
 
 }
@@ -181,3 +181,5 @@ const players = (() => {
   return { updateScores, getPlayer, switchSides };
 
 })();
+
+const controller = new Controller();
